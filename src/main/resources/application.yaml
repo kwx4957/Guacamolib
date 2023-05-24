@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://115.85.183.199:3306/forten
+    username: root
+    password:  Qurd%1234
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: 'create-drop'
+    properties:
+      hibernate:
+        format_sql: true
