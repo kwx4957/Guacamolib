@@ -1,10 +1,9 @@
 package com.example.demo.domain.topic.application;
 
-
 import com.example.demo.domain.topic.dao.TopicRepository;
 import com.example.demo.domain.topic.domain.Topic;
+import com.example.demo.domain.topic.dto.TopicPageResponse;
 import com.example.demo.domain.topic.dto.TopicRequest;
-import com.example.demo.domain.topic.dto.TopicResponse;
 import com.example.demo.domain.topic.exception.PasswordNotMatchedException;
 import com.example.demo.domain.topic.exception.TopicNotFoundException;
 import com.example.demo.global.common.PageResponse;
@@ -26,9 +25,11 @@ public class TopicService {
         this.topicRepository = topicRepository;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Topic findTopicById(long id) {
-        return topicRepository.findById(id).orElseThrow(()->new TopicNotFoundException("존재하지 않는 주제에요."));
+        Topic topic = topicRepository.findById(id).orElseThrow(()->new TopicNotFoundException("존재하지 않는 주제에요."));
+        topic.addViews();
+        return topic;
     }
 
     @Transactional
@@ -47,13 +48,14 @@ public class TopicService {
         topicRepository.delete(topic);
     }
 
+    @Transactional(readOnly = true)
     public PageResponse getListTopicByNew(Pageable pageable) {
         Page<Topic> topicPage = topicRepository.findAll(pageable);
         return getTopicPageResponse(topicPage);
     }
 
     private PageResponse getTopicPageResponse(Page<Topic> topicPage) {
-        List<TopicResponse> topicResponses = topicPage.getContent().stream().map(TopicResponse::of).collect(Collectors.toList());
+        List<TopicPageResponse> topicResponses = topicPage.getContent().stream().map(TopicPageResponse::of).collect(Collectors.toList());
         return PageResponse.builder()
                 .statusCode(HttpStatus.OK.value())
                 .data(topicResponses)
