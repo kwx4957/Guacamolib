@@ -1,6 +1,6 @@
-package com.example.demo.repository;
+package com.example.demo.domain.topic.dao;
 
-import com.example.demo.entity.SelectedOption;
+import com.example.demo.domain.topic.domain.SelectedOption;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
