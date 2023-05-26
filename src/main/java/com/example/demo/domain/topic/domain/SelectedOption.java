@@ -28,6 +28,10 @@ public class SelectedOption extends BaseEntity {
         this.secondOption++;
     }
 
+    public long getTotalOptionCount(){
+        return this.firstOption + this.secondOption;
+    }
+
     @Override
     public String toString() {
         return "SelectedOption{" +
