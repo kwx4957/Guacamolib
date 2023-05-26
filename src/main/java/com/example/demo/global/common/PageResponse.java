@@ -1,6 +1,5 @@
-package com.example.demo.domain.topic.dto;
+package com.example.demo.global.common;
 
-import com.example.demo.domain.comment.dto.CommentResponse;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,13 +10,12 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class TopicPageResponse {
+public class PageResponse {
     private int statusCode;
     private List<?> data = new ArrayList<>();
     @Builder
-    public TopicPageResponse(int statusCode, List<?> data) {
+    public PageResponse(int statusCode, List<?> data) {
         this.statusCode = statusCode;
         this.data = data;
     }
-
 }

@@ -1,11 +1,9 @@
 package com.example.demo.domain.comment.api;
 
 import com.example.demo.domain.comment.application.CommentService;
-import com.example.demo.domain.comment.dto.CommentPageResponse;
 import com.example.demo.domain.comment.dto.CommentRequest;
 import com.example.demo.domain.topic.exception.TopicNotFoundException;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,9 +27,7 @@ public class CommentApi {
         if(!commentService.existTopicById(topicId)){
             throw new TopicNotFoundException("존재하지 않는 주제에요.");
         }
-
-        CommentPageResponse page = commentService.getListComment(topicId, pageable);
-        return ResponseEntity.ok(page);
+        return ResponseEntity.ok(commentService.getListComment(topicId, pageable));
     }
     @PostMapping("/topics/{topicId}/comments")
     public ResponseEntity<?> createComment(@PathVariable long topicId,

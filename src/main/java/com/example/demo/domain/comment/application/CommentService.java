@@ -2,12 +2,12 @@ package com.example.demo.domain.comment.application;
 
 import com.example.demo.domain.comment.dao.CommentRepository;
 import com.example.demo.domain.comment.domain.Comment;
-import com.example.demo.domain.comment.dto.CommentPageResponse;
 import com.example.demo.domain.comment.dto.CommentRequest;
 import com.example.demo.domain.comment.dto.CommentResponse;
 import com.example.demo.domain.comment.exception.CommentNotFoundException;
 import com.example.demo.domain.topic.dao.TopicRepository;
 import com.example.demo.domain.topic.exception.PasswordNotMatchedException;
+import com.example.demo.global.common.PageResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -44,14 +44,14 @@ public class CommentService {
        commentRepository.delete(comment);
     }
 
-    public CommentPageResponse getListComment(long topicId, Pageable pageable) {
+    public PageResponse getListComment(long topicId, Pageable pageable) {
         Page<Comment> commentPage = commentRepository.findAllByTopicId(topicId, pageable);
         return getCommentPageResponse(commentPage, pageable);
     }
 
-    private CommentPageResponse getCommentPageResponse(Page<Comment> comments, Pageable pageable) {
+    private PageResponse getCommentPageResponse(Page<Comment> comments, Pageable pageable) {
         List<CommentResponse> commentResponses = comments.getContent().stream().map(CommentResponse::of).collect(Collectors.toList());
-        return CommentPageResponse.builder()
+        return PageResponse.builder()
                 .statusCode(HttpStatus.OK.value())
                 .data(commentResponses)
                 .build();

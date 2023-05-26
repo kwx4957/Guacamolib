@@ -1,18 +1,14 @@
 package com.example.demo.domain.topic.application;
 
-import com.example.demo.domain.comment.domain.Comment;
-import com.example.demo.domain.comment.dto.CommentPageResponse;
-import com.example.demo.domain.comment.dto.CommentResponse;
+
 import com.example.demo.domain.topic.dao.TopicRepository;
 import com.example.demo.domain.topic.domain.Topic;
-import com.example.demo.domain.topic.dto.TopicPageResponse;
 import com.example.demo.domain.topic.dto.TopicRequest;
 import com.example.demo.domain.topic.dto.TopicResponse;
 import com.example.demo.domain.topic.exception.PasswordNotMatchedException;
 import com.example.demo.domain.topic.exception.TopicNotFoundException;
-import lombok.NonNull;
+import com.example.demo.global.common.PageResponse;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -51,14 +47,14 @@ public class TopicService {
         topicRepository.delete(topic);
     }
 
-    public TopicPageResponse getListTopicByNew(Pageable pageable) {
+    public PageResponse getListTopicByNew(Pageable pageable) {
         Page<Topic> topicPage = topicRepository.findAll(pageable);
         return getTopicPageResponse(topicPage);
     }
 
-    private TopicPageResponse getTopicPageResponse(Page<Topic> topicPage) {
+    private PageResponse getTopicPageResponse(Page<Topic> topicPage) {
         List<TopicResponse> topicResponses = topicPage.getContent().stream().map(TopicResponse::of).collect(Collectors.toList());
-        return TopicPageResponse.builder()
+        return PageResponse.builder()
                 .statusCode(HttpStatus.OK.value())
                 .data(topicResponses)
                 .build();
