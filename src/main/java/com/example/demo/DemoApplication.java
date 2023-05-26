@@ -1,17 +1,8 @@
 package com.example.demo;
 
-import com.example.demo.domain.topic.dao.TopicRepository;
-import com.example.demo.domain.topic.domain.Topic;
-import lombok.Builder;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-
-import java.util.Arrays;
-import java.util.List;
 
 @SpringBootApplication
 @EnableJpaAuditing
