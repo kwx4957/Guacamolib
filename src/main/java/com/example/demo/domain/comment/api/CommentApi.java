@@ -23,19 +23,14 @@ public class CommentApi {
 
     @GetMapping("/topics/{topicId}/comments")
     public ResponseEntity<?> getListComments(@PathVariable long topicId, Pageable pageable){
+        existTopic(topicId);
 
-        if(!commentService.existTopicById(topicId)){
-            throw new TopicNotFoundException("존재하지 않는 주제에요.");
-        }
         return ResponseEntity.ok(commentService.getListComment(topicId, pageable));
     }
     @PostMapping("/topics/{topicId}/comments")
     public ResponseEntity<?> createComment(@PathVariable long topicId,
                                         @RequestBody @Valid CommentRequest commentRequest){
-
-        if(!commentService.existTopicById(topicId)){
-            throw new TopicNotFoundException("존재하지 않는 주제에요.");
-        }
+        existTopic(topicId);
 
         commentService.createComment(topicId,commentRequest);
         return RESPONSE_CREATED;
@@ -44,13 +39,16 @@ public class CommentApi {
     public ResponseEntity<?> deleteComment(@PathVariable long topicId,
                        @PathVariable long commentId,
                        @RequestBody Map<String,String> passwordMap){
-
-        if(!commentService.existTopicById(topicId)){
-            throw new TopicNotFoundException("존재하지 않는 주제에요.");
-        }
+        existTopic(topicId);
 
         commentService.deleteComment(commentId, passwordMap.get("password"));
         return RESPONSE_NO_CONTENT;
+    }
+
+    private void existTopic(long topicId){
+        if(!commentService.existTopicById(topicId)){
+            throw new TopicNotFoundException("존재하지 않는 주제에요.");
+        }
     }
 
 }
