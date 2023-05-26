@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -27,7 +26,7 @@ public class TopicResponse {
                 .content(topic.getContent())
                 .firstOption(new Option(topic.getFirstOption(),topic.getSelectedOption().getFirstOption()))
                 .secondOption(new Option(topic.getSecondOption(),topic.getSelectedOption().getSecondOption()))
-                .createAt(topic.getCreatedat())
+                .createAt(topic.getCreatedAt())
                 .build();
     }
 

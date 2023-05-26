@@ -21,7 +21,7 @@ public class CommentResponse {
         return CommentResponse.builder()
                 .id(comment.getId())
                 .content(comment.getContent())
-                .createAt(comment.getCreatedat())
+                .createAt(comment.getCreatedAt())
                 .build();
     }
 }
