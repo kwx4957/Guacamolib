@@ -6,10 +6,8 @@ import com.example.demo.domain.topic.dto.TopicPageResponse;
 import com.example.demo.domain.topic.dto.TopicRequest;
 import com.example.demo.domain.topic.exception.PasswordNotMatchedException;
 import com.example.demo.domain.topic.exception.TopicNotFoundException;
-import com.example.demo.global.common.PageResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,16 +47,11 @@ public class TopicService {
     }
 
     @Transactional(readOnly = true)
-    public PageResponse getListTopicByNew(Pageable pageable) {
-        Page<Topic> topicPage = topicRepository.findAll(pageable);
-        return getTopicPageResponse(topicPage);
+    public List<?> getListTopicByNew(Pageable pageable) {
+        return getTopicPageResponse(topicRepository.findAll(pageable));
     }
 
-    private PageResponse getTopicPageResponse(Page<Topic> topicPage) {
-        List<TopicPageResponse> topicResponses = topicPage.getContent().stream().map(TopicPageResponse::of).collect(Collectors.toList());
-        return PageResponse.builder()
-                .statusCode(HttpStatus.OK.value())
-                .data(topicResponses)
-                .build();
+    private List<TopicPageResponse> getTopicPageResponse(Page<Topic> topicPage) {
+        return topicPage.getContent().stream().map(TopicPageResponse::of).collect(Collectors.toList());
     }
 }

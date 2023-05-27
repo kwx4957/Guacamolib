@@ -7,10 +7,8 @@ import com.example.demo.domain.comment.dto.CommentResponse;
 import com.example.demo.domain.comment.exception.CommentNotFoundException;
 import com.example.demo.domain.topic.dao.TopicRepository;
 import com.example.demo.domain.topic.exception.PasswordNotMatchedException;
-import com.example.demo.global.common.PageResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,16 +42,11 @@ public class CommentService {
        commentRepository.delete(comment);
     }
 
-    public PageResponse getListComment(long topicId, Pageable pageable) {
-        Page<Comment> commentPage = commentRepository.findAllByTopicId(topicId, pageable);
-        return getCommentPageResponse(commentPage, pageable);
+    public List<?> getListComment(long topicId, Pageable pageable) {
+        return getCommentPageResponse(commentRepository.findAllByTopicId(topicId, pageable));
     }
 
-    private PageResponse getCommentPageResponse(Page<Comment> comments, Pageable pageable) {
-        List<CommentResponse> commentResponses = comments.getContent().stream().map(CommentResponse::of).collect(Collectors.toList());
-        return PageResponse.builder()
-                .statusCode(HttpStatus.OK.value())
-                .data(commentResponses)
-                .build();
+    private List<?> getCommentPageResponse(Page<Comment> comments) {
+        return comments.getContent().stream().map(CommentResponse::of).collect(Collectors.toList());
     }
 }

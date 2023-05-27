@@ -24,7 +24,6 @@ public class CommentApi {
     @GetMapping("/topics/{topicId}/comments")
     public ResponseEntity<?> getListComments(@PathVariable long topicId, Pageable pageable){
         existTopic(topicId);
-
         return ResponseEntity.ok(commentService.getListComment(topicId, pageable));
     }
     @PostMapping("/topics/{topicId}/comments")
@@ -40,7 +39,6 @@ public class CommentApi {
                        @PathVariable long commentId,
                        @RequestBody Map<String,String> passwordMap){
         existTopic(topicId);
-
         commentService.deleteComment(commentId, passwordMap.get("password"));
         return RESPONSE_NO_CONTENT;
     }
