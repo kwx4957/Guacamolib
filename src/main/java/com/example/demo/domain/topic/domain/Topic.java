@@ -41,4 +41,8 @@ public class Topic extends BaseEntity {
     public void addViews(){
         this.views++;
     }
+    public long sumCommentCountAndSelectedOptions(){
+        return this.getCommentCounts() + this.getSelectedOption().getTotalOptionCount();
+    }
+
 }

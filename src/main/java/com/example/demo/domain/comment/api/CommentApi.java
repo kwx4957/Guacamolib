@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-import static com.example.demo.global.common.HttpStatusResponseEntity.RESPONSE_CREATED;
-import static com.example.demo.global.common.HttpStatusResponseEntity.RESPONSE_NO_CONTENT;
 
 @RestController
 public class CommentApi {
@@ -31,8 +29,8 @@ public class CommentApi {
                                         @RequestBody @Valid CommentRequest commentRequest){
         existTopic(topicId);
 
-        commentService.createComment(topicId,commentRequest);
-        return RESPONSE_CREATED;
+        long commentId = commentService.createComment(topicId,commentRequest);
+        return ResponseEntity.ok(convertToMap("createdCommentId",commentId));
     }
     @DeleteMapping("/topics/{topicId}/comments/{commentId}")
     public ResponseEntity<?> deleteComment(@PathVariable long topicId,
@@ -40,7 +38,10 @@ public class CommentApi {
                        @RequestBody Map<String,String> passwordMap){
         existTopic(topicId);
         commentService.deleteComment(commentId, passwordMap.get("password"));
-        return RESPONSE_NO_CONTENT;
+        return ResponseEntity.ok(convertToMap("deletedCommentId",commentId));
+    }
+    private Map<String,Long> convertToMap(String name, long topicId){
+        return Map.of(name,topicId);
     }
 
     private void existTopic(long topicId){

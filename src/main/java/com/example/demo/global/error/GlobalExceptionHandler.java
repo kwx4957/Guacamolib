@@ -12,19 +12,24 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(TopicNotFoundException.class)
-    public ResponseEntity<Object> topicNotFoundException(TopicNotFoundException e){
-        return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> topicNotFoundException(TopicNotFoundException e){
+        return new ResponseEntity<>(makeErrorResponse(e.getMessage()),HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(PasswordNotMatchedException.class)
-    public ResponseEntity<String> PasswordNotMatchedException(PasswordNotMatchedException e){
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<?> PasswordNotMatchedException(PasswordNotMatchedException e){
+        return new ResponseEntity<>(makeErrorResponse(e.getMessage()), HttpStatus.UNAUTHORIZED);
     }
     @ExceptionHandler(CommentNotFoundException.class)
-    public ResponseEntity<String> commentNotFoundException(CommentNotFoundException e){
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> commentNotFoundException(CommentNotFoundException e) {
+        return new ResponseEntity<>(makeErrorResponse(e.getMessage()), HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> methodArgumentNotValidException(MethodArgumentNotValidException e){
-        return new ResponseEntity<>("입력 값을 확인해주세요",HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(makeErrorResponse("입력 값을 확인해주세요"),HttpStatus.BAD_REQUEST);
     }
+
+    private ErrorResponse makeErrorResponse(String msg){
+        return ErrorResponse.builder().msg(msg).build();
+    }
+
 }

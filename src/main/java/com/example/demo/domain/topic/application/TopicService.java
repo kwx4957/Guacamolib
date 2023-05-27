@@ -4,6 +4,7 @@ import com.example.demo.domain.topic.dao.TopicRepository;
 import com.example.demo.domain.topic.domain.Topic;
 import com.example.demo.domain.topic.dto.TopicPageResponse;
 import com.example.demo.domain.topic.dto.TopicRequest;
+import com.example.demo.domain.topic.dto.TopicResponse;
 import com.example.demo.domain.topic.exception.PasswordNotMatchedException;
 import com.example.demo.domain.topic.exception.TopicNotFoundException;
 import org.springframework.data.domain.Page;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,8 +33,8 @@ public class TopicService {
     }
 
     @Transactional
-    public void createTopic(TopicRequest topicRequest){
-        topicRepository.save(topicRequest.toEntity());
+    public long createTopic(TopicRequest topicRequest){
+        return topicRepository.save(topicRequest.toEntity()).getId();
     }
 
     @Transactional
@@ -51,7 +53,18 @@ public class TopicService {
         return getTopicPageResponse(topicRepository.findAll(pageable));
     }
 
-    private List<TopicPageResponse> getTopicPageResponse(Page<Topic> topicPage) {
-        return topicPage.getContent().stream().map(TopicPageResponse::of).collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public List<?> getListTopicByHot(Pageable pageable){
+        Page<Topic> topicPage = topicRepository.findAllByCreatedAtAfter(pageable, LocalDateTime.now().minusDays(7));
+
+        topicPage.stream().forEach(Topic::sumCommentCountAndSelectedOptions);
+//        List<TopicPageResponse> topicPageResponseList = getTopicPageResponse(topicPage);
+//
+//        topicPageResponseList.stream().map(T);
+//        return
     }
+
+//    private List<TopicPageResponse> getTopicPageResponse(Page<Topic> topicPage) {
+//        return topicPage.getContent().stream().map(TopicPageResponse::of).collect(Collectors.toList());
+//    }
 }

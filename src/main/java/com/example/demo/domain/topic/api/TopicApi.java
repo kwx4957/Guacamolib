@@ -11,6 +11,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.demo.global.common.HttpStatusResponseEntity.*;
@@ -23,14 +24,12 @@ public class TopicApi {
     public TopicApi(TopicService topicService) {
         this.topicService = topicService;
     }
-    // 투표수랑 댓글수 리턴 값 리스트 포함
-    // hot(댓글+투표수) 5개 고정 최근 7일을 기준으로 댓글 + 투표수가 높은 것
     @GetMapping("/topics")
     public ResponseEntity<?> getListTopic(
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC)
             Pageable pageable){
         log.info("토픽 페이징 요청 " + pageable);
-        return ResponseEntity.ok(topicService.getListTopicByNew(pageable));
+        return ResponseEntity.ok(topicService.getListTopicByHot(pageable));
     }
 
     @GetMapping("/topics/{topicId}")
@@ -40,13 +39,16 @@ public class TopicApi {
 
     @PostMapping("/topics")
     public ResponseEntity<?> createTopic(@RequestBody @Valid TopicRequest topicRequest){
-        topicService.createTopic(topicRequest);
-        return RESPONSE_CREATED;
+        long topicId = topicService.createTopic(topicRequest);
+        return ResponseEntity.ok(convertToMap("createdTopicId",topicId));
     }
     @DeleteMapping("/topics/{topicId}")
     public ResponseEntity<?> deleteTopic(@PathVariable long topicId,
                                          @RequestBody Map<String,String> passwordMap){
         topicService.deleteById(topicId,passwordMap.get("password"));
-        return RESPONSE_NO_CONTENT;
+        return ResponseEntity.ok(convertToMap("deletedTopicId",topicId));
+    }
+    private Map<String,Long> convertToMap(String name, long topicId){
+        return Map.of(name,topicId);
     }
 }

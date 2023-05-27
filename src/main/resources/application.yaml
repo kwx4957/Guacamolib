@@ -10,11 +10,11 @@ spring:
     show-sql: true
     generate-ddl: true
     hibernate:
-      ddl-auto: create-drop
-      format_sql: true
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
 #  sql:
 #    init:
 #      mode: always
+

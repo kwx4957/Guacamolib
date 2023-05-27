@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 
-import static com.example.demo.global.common.HttpStatusResponseEntity.RESPONSE_NO_CONTENT;
 
 @RestController
 public class OptionApi {
@@ -19,6 +18,9 @@ public class OptionApi {
     public ResponseEntity<?> chooseOption(@PathVariable long topicId,
                                          @RequestBody Map<String,String> vote){
         optionService.chooseOption(topicId, vote.get("vote"));
-        return RESPONSE_NO_CONTENT;
+        return ResponseEntity.ok(convertToMap("votedTopicId",topicId));
+    }
+    private Map<String,Long> convertToMap(String name, long topicId){
+        return Map.of(name,topicId);
     }
 }

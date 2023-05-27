@@ -27,8 +27,8 @@ public class CommentService {
         return topicRepository.existsById(topicId);
     }
     @Transactional
-    public void createComment(long topicId, CommentRequest commentRequest) {
-        commentRepository.save(commentRequest.toEntity(topicId));
+    public long createComment(long topicId, CommentRequest commentRequest) {
+        return commentRepository.save(commentRequest.toEntity(topicId)).getId();
     }
 
     @Transactional
