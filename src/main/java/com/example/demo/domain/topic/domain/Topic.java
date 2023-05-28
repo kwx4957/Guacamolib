@@ -25,8 +25,11 @@ public class Topic extends BaseEntity {
     private long views;
     @ColumnDefault("0")
     private long commentCounts;
+    @ColumnDefault("0")
+    private long commentIndex;
     @OneToOne(cascade = CascadeType.ALL)
     private SelectedOption selectedOption;
+
     @Builder
     public Topic(String title, String content, String firstOption,
                  String secondOption, String password) {
@@ -38,11 +41,18 @@ public class Topic extends BaseEntity {
         this.selectedOption = new SelectedOption();
     }
 
-    public void addViews(){
-        this.views++;
-    }
+
     public long sumCommentCountAndSelectedOptions(){
         return this.getCommentCounts() + this.getSelectedOption().getTotalOptionCount();
     }
-
+    public void addViews(){
+        this.views++;
+    }
+    public void increaseCommentAndIndex() {
+        this.commentCounts++;
+        this.commentIndex++;
+    }
+    public void decreaseComment() {
+        this.commentCounts--;
+    }
 }

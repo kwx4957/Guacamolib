@@ -25,7 +25,7 @@ public class CommentResponse {
         return CommentResponse.builder()
                 .id(comment.getId())
                 .topicId(comment.getTopicId())
-                .commentIndex(comment.getTopicId()) //????????
+                .commentIndex(comment.getIndexComment())
                 .content(comment.getContent())
                 .createAt(comment.getCreatedAt())
                 .build();
