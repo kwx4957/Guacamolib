@@ -5,16 +5,15 @@ import com.example.demo.domain.topic.dto.TopicRequest;
 import com.example.demo.domain.topic.dto.TopicResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import static com.example.demo.global.common.HttpStatusResponseEntity.*;
 
 @Slf4j
 @RestController
@@ -26,10 +25,23 @@ public class TopicApi {
     }
     @GetMapping("/topics")
     public ResponseEntity<?> getListTopic(
-            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC)
-            Pageable pageable){
-        log.info("토픽 페이징 요청 " + pageable);
-        return ResponseEntity.ok(topicService.getListTopicByHot(pageable));
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sort){
+
+        List<?> getListTopics = null;
+
+        if(sort.equals("new")){
+            sort = "createdAt";
+            Pageable paging = PageRequest.of(page,size,Sort.by(sort).descending());
+            getListTopics = topicService.getListTopicByNew(paging);
+        } else if (sort.equals("hot")) {
+            sort = "createdAt";
+            Pageable paging = PageRequest.of(page,size,Sort.by(sort).descending());
+            getListTopics = topicService.getListTopicByHot(paging);
+        }
+
+        return ResponseEntity.ok(getListTopics);
     }
 
     @GetMapping("/topics/{topicId}")
