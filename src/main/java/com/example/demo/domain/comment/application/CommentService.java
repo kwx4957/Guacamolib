@@ -6,7 +6,9 @@ import com.example.demo.domain.comment.dto.CommentRequest;
 import com.example.demo.domain.comment.dto.CommentResponse;
 import com.example.demo.domain.comment.exception.CommentNotFoundException;
 import com.example.demo.domain.topic.dao.TopicRepository;
+import com.example.demo.domain.topic.domain.Topic;
 import com.example.demo.domain.topic.exception.PasswordNotMatchedException;
+import com.example.demo.domain.topic.exception.TopicNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,16 +25,18 @@ public class CommentService {
         this.commentRepository = commentRepository;
         this.topicRepository = topicRepository;
     }
-    public boolean existTopicById(long topicId){
-        return topicRepository.existsById(topicId);
+    public Topic findTopicById(long topicId){
+        return topicRepository.findById(topicId).orElseThrow(() -> new TopicNotFoundException("존재하지 않는 주제에요"));
     }
     @Transactional
     public long createComment(long topicId, CommentRequest commentRequest) {
-        return commentRepository.save(commentRequest.toEntity(topicId)).getId();
+        Topic topic = findTopicById(topicId);
+        topic.increaseCommentAndIndex();
+        return commentRepository.save(commentRequest.toEntity(topicId,topic.getCommentIndex())).getId();
     }
 
     @Transactional
-    public void deleteComment(long commentId, String password) {
+    public void deleteComment(long topicId, long commentId, String password) {
        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundException("존재하지 않는 댓글이에요."));
 
        if(!comment.getPassword().equals(password)){
@@ -40,9 +44,11 @@ public class CommentService {
        }
 
        commentRepository.delete(comment);
+       findTopicById(topicId).decreaseComment();
     }
 
     public List<?> getListComment(long topicId, Pageable pageable) {
+        findTopicById(topicId);
         return getCommentPageResponse(commentRepository.findAllByTopicId(topicId, pageable));
     }
 

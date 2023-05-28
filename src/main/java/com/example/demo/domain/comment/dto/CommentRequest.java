@@ -14,8 +14,9 @@ public class CommentRequest {
     @NotBlank
     private String password;
 
-    public Comment toEntity(long topicId){
+    public Comment toEntity(long topicId,long index){
         return Comment.builder()
+                .index(index)
                 .content(this.content)
                 .password(this.password)
                 .topicId(topicId)
