@@ -15,18 +15,18 @@ import org.hibernate.annotations.ColumnDefault;
 public class Topic extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String title;
     private String content;
     private String firstOption;
     private String secondOption;
     private String password;
     @ColumnDefault("0")
-    private long views;
+    private Long views;
     @ColumnDefault("0")
-    private long commentCounts;
+    private Long commentCounts;
     @ColumnDefault("0")
-    private long commentIndex;
+    private Long commentIndex;
     @OneToOne(cascade = CascadeType.ALL)
     private SelectedOption selectedOption;
 

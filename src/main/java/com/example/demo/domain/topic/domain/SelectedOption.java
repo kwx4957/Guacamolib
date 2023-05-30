@@ -16,11 +16,11 @@ import org.hibernate.annotations.ColumnDefault;
 public class SelectedOption extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @ColumnDefault("0")
-    private long firstOption;
+    private Long firstOption;
     @ColumnDefault("0")
-    private long secondOption;
+    private Long secondOption;
     public void increaseFirstOption(){
         this.firstOption++;
     }

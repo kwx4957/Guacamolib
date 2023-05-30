@@ -14,12 +14,12 @@ import org.hibernate.annotations.ColumnDefault;
 public class Comment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String content;
     private String password;
     @ColumnDefault("0")
-    private long indexComment;
-    private long topicId; // N to 1
+    private Long indexComment;
+    private Long topicId; // N to 1
 
     @Builder
     public Comment(String content, String password, long topicId, long index) {
