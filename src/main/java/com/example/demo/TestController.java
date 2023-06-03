@@ -62,8 +62,3 @@ public class TestController {
         br.close();
     }
 }
-
-// 1. GET https://kapi.kakao.com/oauth/authorize
-// 2. redirect url로 인가 코드 전달
-
-// 3. POST /oauth/token
