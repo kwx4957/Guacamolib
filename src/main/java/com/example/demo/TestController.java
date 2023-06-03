@@ -38,23 +38,19 @@ public class TestController {
         String returnData ="";
 
         URL url = new URL("https://kauth.kakao.com/oauth/token");
-        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
         conn.setDoOutput(true); //POST BODY 넘기기
         conn.setDoInput(true);
 
-        List<String> rs = new ArrayList<>();
-        rs.add("grant_type=authorization_code");
-        rs.add("client_id="+clientId);
-        rs.add("code=" + code);
-        rs.add("redirect_uri="+ redirectURL);
-
-        System.out.println();
-        DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
-        dos.writeBytes(String.valueOf(rs));
+        String request = "grant_type=authorization_code&client_id="+clientId+"&code="+code+"&redirect_uri="+redirectURL;
+        OutputStream os = conn.getOutputStream();
+        os.write(request.getBytes(StandardCharsets.UTF_8));
+        os.close();
 
         conn.connect();
+
         br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
         sb = new StringBuffer();
         while ((response = br.readLine()) !=null){
