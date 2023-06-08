@@ -2,6 +2,7 @@ package com.example.demo;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +19,7 @@ public class TestController {
     String clientId = "864b7106c176be294a68dbf5c9b8b95e";
     String redirectURL = "http://127.0.0.1:8080/redirect";
     String response = "code";
-    @GetMapping("/")
+    @GetMapping("/noway")
     public String helloworld() throws MalformedURLException {
         return "https://kauth.kakao.com/oauth/authorize" + "?"
                 + URLEncoder.encode("response_type", StandardCharsets.UTF_8) + "=code"
