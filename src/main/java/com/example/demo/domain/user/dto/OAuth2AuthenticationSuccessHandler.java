@@ -33,9 +33,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         Authentication authentication) throws IOException {
 
         String targetUrl = determineTargetUrl(request, response, authentication);
-
+        log.info("trageturl"+targetUrl);
         clearAuthenticationAttributes(request, response);
-        getRedirectStrategy().sendRedirect(request, response, targetUrl);
+        getRedirectStrategy().sendRedirect(request, response,targetUrl);
     }
 
     protected String determineTargetUrl(
@@ -49,6 +49,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
         String token = tokenProvider.generateToken(authentication);
+        log.info("determintarulul"+targetUrl);
 
         return UriComponentsBuilder.fromUriString(targetUrl)
             .queryParam("token", token)

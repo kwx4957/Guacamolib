@@ -7,12 +7,16 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
+import org.springframework.web.filter.GenericFilterBean;
 
 
-public class JwtAuthenticationFilter extends GenericFilter {
+@Slf4j
+public class JwtAuthenticationFilter extends GenericFilterBean {
 
     public JwtAuthenticationFilter(JwtTokenProvider tokenProvider) {
         this.jwtTokenProvider = tokenProvider;
@@ -20,13 +24,18 @@ public class JwtAuthenticationFilter extends GenericFilter {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request,
+                         ServletResponse response,
+                         FilterChain chain) throws IOException, ServletException {
+        HttpServletRequest rdaf = (HttpServletRequest) request;
+        log.info(rdaf.getHeader("Authorization"));
         String token = resolveToken((HttpServletRequest) request);
-
+        log.info("dofilterToekin",  token);
         // 토큰 유효성 검사
         if (token!=null && jwtTokenProvider.validateToken(token)) {
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            log.info("tokne not null ", token);
         }
         chain.doFilter(request, response);
     }

@@ -1,10 +1,7 @@
 package com.example.demo.domain.user.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.example.demo.domain.user.dto.Role;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
@@ -18,11 +15,13 @@ public class User {
     private String email;
     private String name;
     private String provider;
-
+    @Enumerated(EnumType.STRING)
+    private Role role;
     @Builder
-    public User(String name, String email, String provider) {
+    public User(String name, String email, String provider, Role role) {
         this.name = name;
         this.email = email;
+        this.role = role;
         this.provider = provider;
     }
 
@@ -31,4 +30,7 @@ public class User {
         return this;
     }
 
+    public String getRoleKey(){
+        return this.role.getKey();
+    }
 }

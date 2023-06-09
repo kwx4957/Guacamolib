@@ -48,11 +48,11 @@ public class WebSecurityConfig {
              .httpBasic().disable()
              .formLogin().disable()
 
-            .authorizeHttpRequests().requestMatchers("/","/login/**","/user/**").permitAll()
+            .authorizeHttpRequests().requestMatchers("/","/login/**","/oauth2/**").permitAll()
              .and()
 
              .oauth2Login()
-                .authorizationEndpoint().baseUri("/user/login")
+                .authorizationEndpoint().baseUri("/oauth2/authorize")
                 .authorizationRequestRepository(cookieOAuth2AuthorizationRequestRepository())
              .and()
                 .redirectionEndpoint()
