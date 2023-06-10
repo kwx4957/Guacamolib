@@ -53,7 +53,13 @@ spring:
             userInfoUri: https://openapi.naver.com/v1/nid/me
             userNameAttribute: response
 jwt:
-  secret: "sadfsadfsadfsadfsdafsadfasdfasfsadfsdafsdafsaffd"
+  secretKey: "ZmFzZGY1NTE1MTMxMjM0MjEzc2RmZHNhNDFgMjM0"
+  access:
+    expiration: 360000
+    header: Authorization
+  refresh:
+    expiration: 1209600000
+    header: Authorization-refresh
 #  sql:
 #    init:
 #      mode: always

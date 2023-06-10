@@ -1,36 +1,44 @@
 package com.example.demo.domain.user.domain;
 
-import com.example.demo.domain.user.dto.Role;
-import jakarta.persistence.*;
+import com.example.demo.domain.user.model.Role;
+import com.example.demo.domain.user.model.SocialType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
 @Table
+@Builder
+@AllArgsConstructor
+@Getter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String email;
-    private String name;
-    private String provider;
+    private String nickname;
     @Enumerated(EnumType.STRING)
     private Role role;
-    @Builder
-    public User(String name, String email, String provider, Role role) {
-        this.name = name;
-        this.email = email;
-        this.role = role;
-        this.provider = provider;
+    @Enumerated(EnumType.STRING)
+    private SocialType socialType;
+    private String socialId;
+    private String refreshToken; // 리프레시 토큰
+
+    // 유저 권한 설정 메소드
+    public void authorizeUser() {
+        this.role = Role.USER;
     }
 
-    public User update(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public String getRoleKey(){
-        return this.role.getKey();
+    public void updateRefreshToken(String updateRefreshToken) {
+        this.refreshToken = updateRefreshToken;
     }
 }
