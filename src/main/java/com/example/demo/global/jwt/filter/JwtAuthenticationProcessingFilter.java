@@ -3,6 +3,7 @@ package com.example.demo.global.jwt.filter;
 import com.example.demo.domain.user.dao.UserRepository;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.jwt.application.JwtService;
+import com.example.demo.global.jwt.util.PasswordUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,19 +28,21 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserRepository userRepository;
 
-    private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
+    private final GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        FilterChain filterChain) throws ServletException, IOException {
+
         if (request.getRequestURI().equals(NO_CHECK_URL)) {
             filterChain.doFilter(request, response); // "/login" 요청이 들어오면, 다음 필터 호출
             return; // return으로 이후 현재 필터 진행 막기 (안해주면 아래로 내려가서 계속 필터 진행시킴)
         }
 
         // 사용자 요청 헤더에서 RefreshToken 추출
-        // -> RefreshToken이 없거나 유효하지 않다면(DB에 저장된 RefreshToken과 다르다면) null을 반환
-        // 사용자의 요청 헤더에 RefreshToken이 있는 경우는, AccessToken이 만료되어 요청한 경우밖에 없다.
-        // 따라서, 위의 경우를 제외하면 추출한 refreshToken은 모두 null
+        // RefreshToken이 없거나 유효(DB값과 다르면) X null
         String refreshToken = jwtService.extractRefreshToken(request)
             .filter(jwtService::isTokenValid)
             .orElse(null);
@@ -101,9 +104,9 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         log.info("checkAccessTokenAndAuthentication() 호출");
         jwtService.extractAccessToken(request)
             .filter(jwtService::isTokenValid)
-            .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
-                .ifPresent(email -> userRepository.findByEmail(email)
-                    .ifPresent(this::saveAuthentication)));
+            .flatMap(jwtService::extractEmail)
+            .flatMap(userRepository::findByEmail)
+            .ifPresent(this::saveAuthentication);
 
         filterChain.doFilter(request, response);
     }
@@ -124,9 +127,14 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      * setAuthentication()을 이용하여 위에서 만든 Authentication 객체에 대한 인증 허가 처리
      */
     public void saveAuthentication(User myUser) {
+        String password = myUser.getPassword();
+        if (password == null){
+            password = PasswordUtil.generateRandomPassword();
+        }
         UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
             .username(myUser.getEmail())
             .roles(myUser.getRole().name())
+            .password(password)
             .build();
 
         Authentication authentication =

@@ -43,23 +43,15 @@ public class JwtService {
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
     private static final String EMAIL_CLAIM = "email";
     private static final String BEARER = "Bearer ";
-
     private final UserRepository userRepository;
 
-    /**
-     * AccessToken 생성 메소드
-     */
     public String createAccessToken(String email) {
         Date now = new Date();
-        return JWT.create() // JWT 토큰을 생성하는 빌더 반환
-            .withSubject(ACCESS_TOKEN_SUBJECT) // JWT의 Subject 지정 -> AccessToken이므로 AccessToken
-            .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod)) // 토큰 만료 시간 설정
-
-            //클레임으로는 저희는 email 하나만 사용합니다.
-            //추가적으로 식별자나, 이름 등의 정보를 더 추가하셔도 됩니다.
-            //추가하실 경우 .withClaim(클래임 이름, 클래임 값) 으로 설정해주시면 됩니다
+        return JWT.create()
+            .withSubject(ACCESS_TOKEN_SUBJECT) // JWT의 Subject : AccessToken
+            .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
             .withClaim(EMAIL_CLAIM, email)
-            .sign(Algorithm.HMAC512(secretKey)); // HMAC512 알고리즘 사용, application-jwt.yml에서 지정한 secret 키로 암호화
+            .sign(Algorithm.HMAC512(secretKey));
     }
 
     /**
@@ -79,7 +71,6 @@ public class JwtService {
      */
     public void sendAccessToken(HttpServletResponse response, String accessToken) {
         response.setStatus(HttpServletResponse.SC_OK);
-
         response.setHeader(accessHeader, accessToken);
         log.info("재발급된 Access Token : {}", accessToken);
     }
@@ -89,10 +80,9 @@ public class JwtService {
      */
     public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
         response.setStatus(HttpServletResponse.SC_OK);
-
         setAccessTokenHeader(response, accessToken);
         setRefreshTokenHeader(response, refreshToken);
-        log.info("Access Token, Refresh Token 헤더 설정 완료");
+        log.info("Access Token, Refresh Token 헤더 설정 완료 + ",accessToken,refreshToken);
     }
 
     /**
@@ -138,29 +128,16 @@ public class JwtService {
         }
     }
 
-    /**
-     * AccessToken 헤더 설정
-     */
     public void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
         response.setHeader(accessHeader, accessToken);
     }
 
-    /**
-     * RefreshToken 헤더 설정
-     */
     public void setRefreshTokenHeader(HttpServletResponse response, String refreshToken) {
         response.setHeader(refreshHeader, refreshToken);
     }
 
-    /**
-     * RefreshToken DB 저장(업데이트)
-     */
     public void updateRefreshToken(String email, String refreshToken) {
-        userRepository.findByEmail(email)
-            .ifPresentOrElse(
-                user -> user.updateRefreshToken(refreshToken),
-                () -> new Exception("일치하는 회원이 없습니다.")
-            );
+        userRepository.findByEmail(email).ifPresentOrElse(user -> user.updateRefreshToken(refreshToken), () -> new Exception("일치하는 회원이 없습니다."));
     }
 
     public boolean isTokenValid(String token) {

@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final UserRepository userRepository;
-
     private static final String NAVER = "naver";
     private static final String KAKAO = "kakao";
 
@@ -48,8 +47,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
          */
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         SocialType socialType = getSocialType(registrationId);
-        String userNameAttributeName = userRequest.getClientRegistration()
-            .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName(); // OAuth2 로그인 시 키(PK)가 되는 값
+        String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails()
+            .getUserInfoEndpoint().getUserNameAttributeName(); // OAuth2 로그인 시 키(PK)가 되는 값
         Map<String, Object> attributes = oAuth2User.getAttributes(); // 소셜 로그인에서 API가 제공하는 userInfo의 Json 값(유저 정보들)
 
         // socialType에 따라 유저 정보를 통해 OAuthAttributes 객체 생성
