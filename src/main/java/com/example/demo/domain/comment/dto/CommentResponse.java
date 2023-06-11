@@ -19,7 +19,7 @@ public class CommentResponse {
     @JsonProperty(value="index")
     private long commentIndex;
     private String content;
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
     public static CommentResponse of(Comment comment){
         return CommentResponse.builder()
@@ -27,7 +27,7 @@ public class CommentResponse {
                 .topicId(comment.getTopicId())
                 .commentIndex(comment.getIndexComment())
                 .content(comment.getContent())
-                .createAt(comment.getCreatedAt())
+                .createdAt(comment.getCreatedAt())
                 .build();
     }
 }

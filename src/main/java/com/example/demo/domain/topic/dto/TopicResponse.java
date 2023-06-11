@@ -18,7 +18,7 @@ public class TopicResponse {
     private String content;
     private Option firstOption;
     private Option secondOption;
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
     public static TopicResponse of(Topic topic){
         return TopicResponse.builder()
                 .id(topic.getId())
@@ -26,7 +26,7 @@ public class TopicResponse {
                 .content(topic.getContent())
                 .firstOption(new Option(topic.getFirstOption(),topic.getSelectedOption().getFirstOption()))
                 .secondOption(new Option(topic.getSecondOption(),topic.getSelectedOption().getSecondOption()))
-                .createAt(topic.getCreatedAt())
+                .createdAt(topic.getCreatedAt())
                 .build();
     }
 

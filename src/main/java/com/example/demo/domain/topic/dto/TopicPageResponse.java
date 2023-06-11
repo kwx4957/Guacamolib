@@ -19,7 +19,7 @@ public class TopicPageResponse {
     private Option secondOption;
     private long voteCount;
     private long commentCount;
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
     public static TopicPageResponse of(Topic topic){
         return TopicPageResponse.builder()
@@ -30,7 +30,7 @@ public class TopicPageResponse {
                 .secondOption(new Option(topic.getSecondOption(),topic.getSelectedOption().getSecondOption()))
                 .voteCount(topic.getSelectedOption().getTotalOptionCount())
                 .commentCount(topic.getCommentCounts())
-                .createAt(topic.getCreatedAt())
+                .createdAt(topic.getCreatedAt())
                 .build();
     }
 
